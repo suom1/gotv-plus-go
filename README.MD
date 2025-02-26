@@ -3,10 +3,13 @@
 ## Author
 Shugo Kawamura  
 Github : [**FlowingSPDG**](http://github.com/FlowingSPDG)  
-Twitter : [**@rjzefl**](http://twitter.com/rjzefl) / [**@FlowingSPDG**](http://twitter.com/FlowingSPDG) / [**@HiiragiNil**](http://twitter.com/HiiragiNil)
+Twitter : [**@FlowingSPDG**](http://twitter.com/FlowingSPDG) / [**@FlowingSPDG_EN**](http://twitter.com/FlowingSPDG_EN)  
+
+## Buy me a coffee
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/flowingspdg)
 
 ## About
-This is [GOTV+](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Broadcast) broadcast server written in Go and Gin.  
+This is [GOTV+](https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Broadcast) broadcast server interface for Go(Fiber and Gin).  
   
 GOTV+ is an extension of GOTV where you use HTTP(S) to distribute instead of connecting to a regular GOTV. This makes it easy to serve many more clients around the world with high quality GOTV as you can distribute the content with CDN's.  
 Using `tv_broadcast` cvars you will enable GOTV+ on your CS:GO Server which will send fragmented data to the GOTV+ ingest (this application) which then serves them to clients which connects to it. The viewer will then watch the feed the same way you would when connecting directly to a GOTV instance.  
@@ -14,24 +17,23 @@ Using `tv_broadcast` cvars you will enable GOTV+ on your CS:GO Server which will
 There are a few projects similar to this. [kunalpowar/csgo-broadacst](https://github.com/kunalpowar/csgo-broadcast)(Go with mux) and [S5Projects/csgo-broadcast](https://github.com/S5Projects/csgo-broadcast)(NodeJS/TypeScript with Express).  
 
 ## Usage
-- Launch GOTV+ Server  
-Directly using Go: `go run ./main.go -addr <IP-ADDRESS>:8080 -auth gopher`  
-Using precompiled binary: `./gotv_plus -addr <IP-ADDRESS>:8080 -auth gopher`  
+- Launch GOTV+ Server(Fiber example)  
+Directly using Go: `go run ./examples/inmemory/cmd/main.go -port 8080 -auth gopher`  
+Using precompiled binary: `./gotv_plus -port :8080 -auth gopher`  
 
 - Enable GOTV broadcast in CS:GO Server by adding this to server.cfg  
 `MATCH_ID` can be what ever you want!  
 ```
 tv_enable 1
-tv_broadcast_url "http://<IP-ADDRESS>:8080/id/MATCH_ID"
+tv_broadcast_url "http://<IP-ADDRESS>:8080/gotv"
 tv_broadcast_origin_auth "gopher"
 tv_broadcast 1
 ```
 
 - Connect to GOTV+ from CS:GO Client  
-In console: `playcast "http://<IP-ADDRESS>:8080/match/id/MATCH_ID"`  
+In console: `playcast "http://<IP-ADDRESS>:8080/gotv/MATCH_ID"`  
 
 ### Tips
-- You can get list of matches by accessing `http://<IP-ADDRESS>:8080`.
 - You should configure `tv_broadcast_...` cvars **before** enable broadcast (`tv_broadcast 1`).  
 And you may need to restart broadcast if you changed cvars. (`tv_broadcast 0;tv_broadcast 1`).
 - `playcast` and `tv_broadcast_url` URL needs to be wrapped by double quotes (e.g. `playcast "http://<IP-ADDRESS>:8080/match/MATCH_ID"`) because of `http:` colon(`:`) is recognized as command seprator for CS:GO.
@@ -135,15 +137,8 @@ WantedBy=multi-user.target
 
 ## Features
 - Multi matches Support
-- Match management(Give specify ID for each matches for support better path like : `/match/this_is_good_match_path/sync` )
-- Match Delete
 - RtDelay/RcVage Support
-- Front end support
-- Internal gRPC API
-- CDN Support(Tested with Cloudflare / Google Cloud CDN)
 - Hidden args support (F/A). F=fragment specification w/o sync request,  A = Play from [1]frag with sync request
 
 ## TODO
-- Dynamic auth system
-- Rich Front end support
 - Hidden args support (C/B). C=play from first? B=?
